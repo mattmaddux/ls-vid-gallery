@@ -47,11 +47,10 @@ class Ls_vid_gallery_Admin {
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -73,8 +72,7 @@ class Ls_vid_gallery_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/ls_vid_gallery-admin.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/ls_vid_gallery-admin.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -96,8 +94,22 @@ class Ls_vid_gallery_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/ls_vid_gallery-admin.js', array( 'jquery' ), $this->version, false );
-
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/ls_vid_gallery-admin.js', array('jquery'), $this->version, false);
 	}
 
+	public function register_admin_pages() {
+		add_menu_page(
+			'LS Video Gallery',
+			'LS Video Gallery',
+			'manage_options',
+			'ls-video-gallery',
+			array($this, 'display_admin_page'),
+			'dashicons-video-alt3',
+			6
+		);
+	}
+
+	public function display_admin_page() {
+		include plugin_dir_path(__FILE__) . 'admin_page.php';
+	}
 }

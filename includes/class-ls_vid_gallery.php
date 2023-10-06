@@ -67,7 +67,7 @@ class Ls_vid_gallery {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'LS_VID_GALLERY_VERSION' ) ) {
+		if (defined('LS_VID_GALLERY_VERSION')) {
 			$this->version = LS_VID_GALLERY_VERSION;
 		} else {
 			$this->version = '1.0.0';
@@ -78,7 +78,6 @@ class Ls_vid_gallery {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -103,27 +102,26 @@ class Ls_vid_gallery {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-ls_vid_gallery-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-ls_vid_gallery-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-ls_vid_gallery-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-ls_vid_gallery-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-ls_vid_gallery-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-ls_vid_gallery-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ls_vid_gallery-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-ls_vid_gallery-public.php';
 
 		$this->loader = new Ls_vid_gallery_Loader();
-
 	}
 
 	/**
@@ -139,8 +137,7 @@ class Ls_vid_gallery {
 
 		$plugin_i18n = new Ls_vid_gallery_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
+		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
 
 	/**
@@ -152,11 +149,11 @@ class Ls_vid_gallery {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Ls_vid_gallery_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Ls_vid_gallery_Admin($this->get_plugin_name(), $this->get_version());
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+		$this->loader->add_action('admin_menu', $plugin_admin, 'register_admin_pages');
 	}
 
 	/**
@@ -168,11 +165,10 @@ class Ls_vid_gallery {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Ls_vid_gallery_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Ls_vid_gallery_Public($this->get_plugin_name(), $this->get_version());
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 	}
 
 	/**
@@ -214,5 +210,4 @@ class Ls_vid_gallery {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

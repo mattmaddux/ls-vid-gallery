@@ -43,7 +43,10 @@ define('LS_VID_GALLERY_VERSION', '1.0.0');
  */
 function activate_ls_vid_gallery() {
 	require_once plugin_dir_path(__FILE__) . 'includes/class-ls_vid_gallery-activator.php';
+	require_once plugin_dir_path(__FILE__) . 'includes/video_database.php';
 	Ls_vid_gallery_Activator::activate();
+	$video_database = new VideoDatabase();
+	$video_database->update_db_tables();
 }
 
 /**
@@ -52,7 +55,10 @@ function activate_ls_vid_gallery() {
  */
 function deactivate_ls_vid_gallery() {
 	require_once plugin_dir_path(__FILE__) . 'includes/class-ls_vid_gallery-deactivator.php';
+	require_once plugin_dir_path(__FILE__) . 'includes/video_database.php';
 	Ls_vid_gallery_Deactivator::deactivate();
+	$video_database = new VideoDatabase();
+	$video_database->drop_db_tables();
 }
 
 register_activation_hook(__FILE__, 'activate_ls_vid_gallery');
@@ -74,7 +80,6 @@ require plugin_dir_path(__FILE__) . 'includes/class-ls_vid_gallery.php';
  * @since    1.0.0
  */
 function run_ls_vid_gallery() {
-
 	$plugin = new Ls_vid_gallery();
 	$plugin->run();
 }
