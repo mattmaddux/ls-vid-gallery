@@ -47,11 +47,10 @@ class Ls_vid_gallery_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -73,8 +72,8 @@ class Ls_vid_gallery_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/ls_vid_gallery-public.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/ls_vid_gallery-public.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->plugin_name . '-bootstrap', "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css", array(), $this->version, 'all');
 	}
 
 	/**
@@ -96,8 +95,8 @@ class Ls_vid_gallery_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/ls_vid_gallery-public.js', array( 'jquery' ), $this->version, false );
-
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/ls_vid_gallery-public.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->plugin_name . '-bootstrap', "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", array(), $this->version, false);
+		wp_enqueue_script($this->plugin_name . '-dashicons', 'enable_frontend_dashicons');
 	}
-
 }

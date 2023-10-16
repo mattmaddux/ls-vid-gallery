@@ -2,3 +2,142 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+.hidden {
+    display: none !important;
+}
+
+
+.video_wrapper {
+    position: relative;
+    display: flex;
+    aspect-ratio: 16/9;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: black;
+}
+
+.video_gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tag_picker_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.video_embed {
+    flex-grow: 1;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    max-width: 100vw !important;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-content {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay.always {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.overlay.always>.video_title {
+    color: rgba(255, 255, 255, 1.0);
+}
+
+
+
+.overlay.tinted {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.0);
+    color: rgba(0, 0, 0, 0.0);
+}
+
+.overlay.tinted:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.overlay.tinted:hover>.video_title {
+    color: rgba(255, 255, 255, 1.0);
+}
+
+.overlay.transparent {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 0)
+}
+
+.overlay.transparent:hover>.play_icon {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.overlay.transparent:hover>.video_title {
+    color: rgba(255, 255, 255, 1.0);
+}
+
+
+.play_icon {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.video_title {
+    position: absolute;
+    display: flex;
+    justify-content: top;
+    align-items: left;
+    font-weight: bold;
+    padding: 1rem;
+    width: 100%;
+    height: 100%;
+}
+
+.expand {
+    transition: all .2s ease-in-out;
+}
+
+.expand:hover {
+    transform: scale(1.1);
+}

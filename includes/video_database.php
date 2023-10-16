@@ -7,14 +7,14 @@ enum VideoType {
     case YouTube;
     case Vimeo;
 
-    public static function fromName(string $name): static {
+    public static function from_name(string $name): static {
         foreach (static::cases() as $case) {
             if ($case->name === $name) {
                 return $case;
             }
         }
 
-        return $YouTube;
+        return VideoType::YouTube;
     }
 }
 
@@ -156,7 +156,11 @@ class VideoDatabase {
         $this->wpdb->delete($this->video_tag_link_table, array('video' => $id), array('%d'));
     }
 
-    public function add_tag($slug, $name) {
+    public function add_tag($name) {
+        $slug = strtolower(str_replace(' ', '_', $name));
+        if ($this->tag_exists($slug)) {
+            throw new Exception("Tag already exists");
+        }
         $data = array(
             'slug' => $slug,
             'name' => $name
@@ -171,6 +175,14 @@ class VideoDatabase {
     }
 
     public function link_video_tag($video, $tag) {
+        if (!$this->video_exists($video)) {
+            throw new Exception("Video does not exist");
+        }
+
+        if (!$this->tag_exists($tag)) {
+            throw new Exception("Tag does not exist");
+        }
+
         $data = array(
             'video' => $video,
             'tag' => $tag
@@ -183,25 +195,93 @@ class VideoDatabase {
         $this->wpdb->delete($this->video_tag_link_table, array('video' => $video, 'tag' => $tag), array('%d', '%s'));
     }
 
-    public function get_videos(?string $tag = null) {
-        if ($tag) {
-            $videos = $this->wpdb->get_results("SELECT * FROM $this->video_table INNER JOIN $this->video_tag_link_table ON $this->video_table.id = $this->video_tag_link_table.video WHERE $this->video_tag_link_table.tag = $tag");
-        } else {
-            $videos = $this->wpdb->get_results("SELECT * FROM $this->video_table");
+    // public function get_videos(?string $tag = null) {
+    //     if ($tag) {
+    //         $videos = $this->wpdb->get_results("SELECT * FROM $this->video_table INNER JOIN $this->video_tag_link_table ON $this->video_table.id = $this->video_tag_link_table.video WHERE $this->video_tag_link_table.tag = $tag");
+    //     } else {
+    //         $videos = $this->wpdb->get_results("SELECT * FROM $this->video_table");
+    //     }
+
+    //     foreach ($videos as $video) {
+    //         $video->type = VideoType::from_name($video->type);
+    //         $video->add_date = getDate(strtotime($video->add_date));
+    //         $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.slug, $this->video_tag_table.name FROM $this->video_tag_table INNER JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag WHERE $this->video_tag_link_table.video = $video->id ORDER BY $this->video_tag_table.name ASC");
+    //         $video->tags = array_map(function ($tag) {
+    //             return (object) array('slug' => $tag->slug, 'name' => $tag->name);
+    //         }, $tags);
+    //     }
+    //     return $videos;
+    // }
+
+    public function get_videos(array $tags = []) {
+        $whereClause = '';
+        if (!empty($tags)) {
+            $tags = array_map(function ($tag) {
+                return $this->wpdb->prepare('%s', $tag);
+            }, $tags);
+            $tags = implode(',', $tags);
+            $whereClause = "WHERE $this->video_tag_link_table.tag IN ($tags)";
         }
 
+        $videos = $this->wpdb->get_results("SELECT DISTINCT $this->video_table.* FROM $this->video_table INNER JOIN $this->video_tag_link_table ON $this->video_table.id = $this->video_tag_link_table.video $whereClause");
+
         foreach ($videos as $video) {
-            $video->type = VideoType::fromName($video->type);
-            $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.slug FROM $this->video_tag_table INNER JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag WHERE $this->video_tag_link_table.video = $video->id");
+            $video->type = VideoType::from_name($video->type);
+            $video->add_date = getDate(strtotime($video->add_date));
+            $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.slug, $this->video_tag_table.name FROM $this->video_tag_table INNER JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag WHERE $this->video_tag_link_table.video = $video->id ORDER BY $this->video_tag_table.name ASC");
             $video->tags = array_map(function ($tag) {
-                return $tag->slug;
+                return (object) array('slug' => $tag->slug, 'name' => $tag->name);
             }, $tags);
         }
         return $videos;
     }
 
-    public function get_tags() {
-        $tags = $this->wpdb->get_results("SELECT * FROM $this->video_tag_table");
+    public function get_video($id) {
+        $video = $this->wpdb->get_row("SELECT * FROM $this->video_table WHERE id = $id");
+        if (!$video) {
+            throw new Exception("Video not found");
+        }
+        $video->type = VideoType::from_name($video->type);
+        $video->add_date = getDate(strtotime($video->add_date));
+        $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.slug, $this->video_tag_table.name FROM $this->video_tag_table INNER JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag WHERE $this->video_tag_link_table.video = $video->id ORDER BY $this->video_tag_table.name ASC");
+        $video->tags = array_map(function ($tag) {
+            return (object) array('slug' => $tag->slug, 'name' => $tag->name);
+        }, $tags);
+        return $video;
+    }
+
+    public function newest_video_with_tag($slug) {
+        $video = $this->wpdb->get_row("SELECT $this->video_table.*, $this->video_tag_table.slug AS tag_slug, $this->video_tag_table.name AS tag_name FROM $this->video_table INNER JOIN $this->video_tag_link_table ON $this->video_table.id = $this->video_tag_link_table.video INNER JOIN $this->video_tag_table ON $this->video_tag_link_table.tag = $this->video_tag_table.slug WHERE $this->video_tag_table.slug = '$slug' ORDER BY $this->video_table.add_date DESC LIMIT 1");
+        if (!$video) {
+            throw new Exception("Video not found");
+        }
+        $video->type = VideoType::from_name($video->type);
+        $video->add_date = getDate(strtotime($video->add_date));
+        $video->tag = (object) array('slug' => $video->tag_slug, 'name' => $video->tag_name);
+        return $video;
+    }
+
+    public function get_tags(array $slugs = []) {
+        $whereClause = '';
+        if (!empty($slugs)) {
+            $slugs = array_map(function ($slug) {
+                return $this->wpdb->prepare('%s', $slug);
+            }, $slugs);
+            $slugs = implode(',', $slugs);
+            $whereClause = "WHERE $this->video_tag_table.slug IN ($slugs)";
+        }
+
+        $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.*, COUNT($this->video_tag_link_table.video) AS video_count FROM $this->video_tag_table LEFT JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag $whereClause GROUP BY $this->video_tag_table.slug");
         return $tags;
+    }
+
+    public function tag_exists($tag) {
+        $tag = $this->wpdb->get_row("SELECT * FROM $this->video_tag_table WHERE slug = '$tag'");
+        return $tag != null;
+    }
+
+    public function video_exists($video) {
+        $video = $this->wpdb->get_row("SELECT * FROM $this->video_table WHERE id = $video");
+        return $video != null;
     }
 }

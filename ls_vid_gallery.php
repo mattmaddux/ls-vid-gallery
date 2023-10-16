@@ -70,6 +70,8 @@ register_deactivation_hook(__FILE__, 'deactivate_ls_vid_gallery');
  */
 require plugin_dir_path(__FILE__) . 'includes/class-ls_vid_gallery.php';
 
+
+
 /**
  * Begins execution of the plugin.
  *
@@ -83,4 +85,7 @@ function run_ls_vid_gallery() {
 	$plugin = new Ls_vid_gallery();
 	$plugin->run();
 }
+
+include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
+
 run_ls_vid_gallery();

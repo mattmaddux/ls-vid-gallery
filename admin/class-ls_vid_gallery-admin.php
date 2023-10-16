@@ -73,6 +73,7 @@ class Ls_vid_gallery_Admin {
 		 */
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/ls_vid_gallery-admin.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->plugin_name . '-bootstrap', "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css", array(), $this->version, 'all');
 	}
 
 	/**
@@ -95,6 +96,12 @@ class Ls_vid_gallery_Admin {
 		 */
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/ls_vid_gallery-admin.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->plugin_name . '-bootstrap', "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", array(), $this->version, false);
+	}
+
+	public function register_endpoints() {
+		include_once plugin_dir_path(__FILE__) . 'endpoints.php';
+		VideoAPI::register_endpoints();
 	}
 
 	public function register_admin_pages() {
@@ -102,14 +109,49 @@ class Ls_vid_gallery_Admin {
 			'LS Video Gallery',
 			'LS Video Gallery',
 			'manage_options',
-			'ls-video-gallery',
-			array($this, 'display_admin_page'),
+			'ls-video-vids',
+			array($this, 'display_admin_videos_page'),
 			'dashicons-video-alt3',
-			6
+			21
+		);
+
+		add_submenu_page(
+			'ls-video-vids',
+			'Videos',
+			'Videos',
+			'manage_options',
+			'ls-video-vids',
+			array($this, 'display_admin_videos_page')
+		);
+
+		add_submenu_page(
+			'ls-video-vids',
+			'Tags',
+			'Tags',
+			'manage_options',
+			'ls-video-tags',
+			array($this, 'display_admin_tags_page')
+		);
+
+		add_submenu_page(
+			'ls-video-vids',
+			'Shortcodes',
+			'Shortcodes',
+			'manage_options',
+			'ls-video-codes',
+			array($this, 'display_admin_codes_page')
 		);
 	}
 
-	public function display_admin_page() {
-		include plugin_dir_path(__FILE__) . 'admin_page.php';
+	public function display_admin_videos_page() {
+		include plugin_dir_path(__FILE__) . 'admin_videos_page.php';
+	}
+
+	public function display_admin_tags_page() {
+		include plugin_dir_path(__FILE__) . 'admin_tags_page.php';
+	}
+
+	public function display_admin_codes_page() {
+		include plugin_dir_path(__FILE__) . 'admin_codes_page.php';
 	}
 }
