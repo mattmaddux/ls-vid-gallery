@@ -3,20 +3,20 @@
 /**
  * Enum representing the type of video source.
  */
-enum VideoType {
-    case YouTube;
-    case Vimeo;
+// enum VideoType {
+//     case YouTube;
+//     case Vimeo;
 
-    public static function from_name(string $name): static {
-        foreach (static::cases() as $case) {
-            if ($case->name === $name) {
-                return $case;
-            }
-        }
+//     public static function from_name(string $name): static {
+//         foreach (static::cases() as $case) {
+//             if ($case->name === $name) {
+//                 return $case;
+//             }
+//         }
 
-        return VideoType::YouTube;
-    }
-}
+//         return VideoType::YouTube;
+//     }
+// }
 
 /**
  * 
@@ -29,6 +29,8 @@ class VideoDatabase {
     private $video_table;
     private $video_tag_table;
     private $video_tag_link_table;
+
+    
 
 
     public function __construct() {
@@ -45,6 +47,11 @@ class VideoDatabase {
     /*
         Private Methods
     */
+
+    const VIDEO_TYPES = array(
+        'YouTube',
+        'Vimeo'
+    );
 
     /**
      * Creates or updates the video table in the database.
@@ -112,6 +119,10 @@ class VideoDatabase {
         Public Methods
     */
 
+    public function get_video_types() {
+        return self::VIDEO_TYPES;
+    }
+
     /**
      * Creates or updates the database tables needed for the plugin.
      *
@@ -141,10 +152,10 @@ class VideoDatabase {
      * @param string $url The URL of the video.
      * @return void
      */
-    public function add_video(string $name, VideoType $type, string $site_id) {
+    public function add_video(string $name, string $type, string $site_id) {
         $data = array(
             'name' => $name,
-            'type' => $type->name,
+            'type' => $type,
             'site_id' => $site_id
         );
         $format = array('%s', '%s', '%s');
@@ -223,10 +234,11 @@ class VideoDatabase {
             $whereClause = "WHERE $this->video_tag_link_table.tag IN ($tags)";
         }
 
-        $videos = $this->wpdb->get_results("SELECT DISTINCT $this->video_table.* FROM $this->video_table INNER JOIN $this->video_tag_link_table ON $this->video_table.id = $this->video_tag_link_table.video $whereClause");
+        $sql = "SELECT DISTINCT $this->video_table.* FROM $this->video_table LEFT JOIN $this->video_tag_link_table ON $this->video_table.id = $this->video_tag_link_table.video $whereClause";
+        $videos = $this->wpdb->get_results($sql);
 
         foreach ($videos as $video) {
-            $video->type = VideoType::from_name($video->type);
+            // $video->type = VideoType::from_name($video->type);
             $video->add_date = getDate(strtotime($video->add_date));
             $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.slug, $this->video_tag_table.name FROM $this->video_tag_table INNER JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag WHERE $this->video_tag_link_table.video = $video->id ORDER BY $this->video_tag_table.name ASC");
             $video->tags = array_map(function ($tag) {
@@ -239,9 +251,11 @@ class VideoDatabase {
     public function get_video($id) {
         $video = $this->wpdb->get_row("SELECT * FROM $this->video_table WHERE id = $id");
         if (!$video) {
-            throw new Exception("Video not found");
+        //     throw new Exception("Video not found");
+            return null;
         }
-        $video->type = VideoType::from_name($video->type);
+        
+        // $video->type = VideoType::from_name($video->type);
         $video->add_date = getDate(strtotime($video->add_date));
         $tags = $this->wpdb->get_results("SELECT $this->video_tag_table.slug, $this->video_tag_table.name FROM $this->video_tag_table INNER JOIN $this->video_tag_link_table ON $this->video_tag_table.slug = $this->video_tag_link_table.tag WHERE $this->video_tag_link_table.video = $video->id ORDER BY $this->video_tag_table.name ASC");
         $video->tags = array_map(function ($tag) {
@@ -255,7 +269,7 @@ class VideoDatabase {
         if (!$video) {
             throw new Exception("Video not found");
         }
-        $video->type = VideoType::from_name($video->type);
+        // $video->type = VideoType::from_name($video->type);
         $video->add_date = getDate(strtotime($video->add_date));
         $video->tag = (object) array('slug' => $video->tag_slug, 'name' => $video->tag_name);
         return $video;

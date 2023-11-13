@@ -27,10 +27,9 @@ class VideoAPI {
     static function add_video(WP_REST_Request $request) {
         include_once plugin_dir_path(dirname(__FILE__)) . 'includes/video_database.php';
         $name = $request->get_param('vid_name');
-        $typeRaw = $request->get_param('vid_type');
+        $type = $request->get_param('vid_type');
         $site_id = $request->get_param('vid_id');
         $redirect = $request->get_param('redirect');
-        $type = VideoType::from_name($typeRaw);
 
         $video_db = new VideoDatabase();
         $video_db->add_video($name, $type, $site_id);

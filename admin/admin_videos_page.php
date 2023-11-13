@@ -63,8 +63,8 @@ if (count($vids) > $per_page) {
                         <th scope="row"><label for="vid_type">Site</label></th>
                         <td>
                             <select name="vid_type" id="vid_type">
-                                <?php foreach (VideoType::cases() as $vid_type) { ?>
-                                    <option value="<?php echo $vid_type->name; ?>"><?php echo $vid_type->name; ?></option>
+                                <?php foreach ($video_database->get_video_types() as $vid_type) { ?>
+                                    <option value="<?php echo $vid_type; ?>"><?php echo $vid_type; ?></option>
                                 <?php } ?>
                                 <!-- <option selected="selected" value="option_one">Option #1</option>
                             <option value="option_2">Option #2</option> -->
@@ -177,7 +177,7 @@ if (count($vids) > $per_page) {
                 <tr>
                     <td class="row-title"><?php echo $vid->id; ?></td>
                     <td class="row-title"><?php echo $vid->name; ?></td>
-                    <td><?php echo $vid->type->name; ?></td>
+                    <td><?php echo $vid->type; ?></td>
                     <td><?php echo $vid->site_id; ?></td>
                     <td><?php echo date_to_string($vid->add_date); ?></td>
                     <td>

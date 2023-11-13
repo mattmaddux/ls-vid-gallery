@@ -41,10 +41,10 @@ function comp_date(array $a, array $b) {
 function get_vid_thumb($type, $id) {
     $thumb_url = "";
     switch ($type) {
-        case VideoType::YouTube:
+        case "YouTube":
             $thumb_url = "https://img.youtube.com/vi/$id/maxresdefault.jpg";
             break;
-        case VideoType::Vimeo:
+        case "Vimeo":
             $data = json_decode(file_get_contents("https://vimeo.com/api/v2/video/$id.json"));
             $thumb_url = $data[0]->thumbnail_large;
             break;
@@ -62,10 +62,10 @@ function get_vid_embed($type, $id, $hidden = false) {
 
     $src_code = "";
     switch ($type) {
-        case VideoType::YouTube:
+        case "YouTube":
             $src_code = "src='//www.youtube.com/embed/$id' ";
             break;
-        case VideoType::Vimeo:
+        case "Vimeo":
             $src_code = "src='https://player.vimeo.com/video/$id' ";
             break;
     }
