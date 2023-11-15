@@ -35,6 +35,7 @@ class VideoAPI {
         $video_db->add_video($name, $type, $site_id);
 
         wp_redirect($redirect);
+        exit();
     }
 
     static function delete_video(WP_REST_Request $request) {
@@ -46,6 +47,7 @@ class VideoAPI {
         $video_db->remove_video($id);
 
         wp_redirect($redirect);
+        exit();
     }
 
     static function link_tag(WP_REST_Request $request) {
@@ -58,6 +60,7 @@ class VideoAPI {
         $video_db->link_video_tag($video, $tag);
 
         wp_redirect($redirect);
+        exit();
     }
 
     static function unlink_tag(WP_REST_Request $request) {
@@ -70,6 +73,7 @@ class VideoAPI {
         $video_db->unlink_video_tag($video, $tag);
 
         wp_redirect($redirect);
+        exit();
     }
 
     static function process_tag_request(WP_REST_Request $request) {
@@ -95,6 +99,7 @@ class VideoAPI {
         $video_db->add_tag($name);
 
         wp_redirect($redirect);
+        exit();
     }
 
 
@@ -107,6 +112,7 @@ class VideoAPI {
         $video_db->remove_tag($slug);
 
         wp_redirect($redirect);
+        exit();
     }
 
     static function register_endpoints() {
