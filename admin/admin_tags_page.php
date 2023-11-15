@@ -44,8 +44,8 @@ if (count($tags) > $per_page) {
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Tags</h1>
-    <a href="<? echo get_redirect(new_params: ['add_expanded' => !$add_expanded]) ?>" class="page-title-action aria-button-if-js" role="button" aria-expanded="true"><? echo $add_expanded ? "Cancel Add" : "Add New"; ?></a>
-    <div class="card" <? echo $add_expanded ? "" : 'hidden'; ?>>
+    <a href="<?php echo get_redirect(new_params: ['add_expanded' => !$add_expanded]) ?>" class="page-title-action aria-button-if-js" role="button" aria-expanded="true"><?php echo $add_expanded ? "Cancel Add" : "Add New"; ?></a>
+    <div class="card" <?php echo $add_expanded ? "" : 'hidden'; ?>>
         <form action="/wp-json/ls-vid-gallery/v1/tags" method="post">
             <table class="form-table">
                 <tbody>
@@ -68,7 +68,7 @@ if (count($tags) > $per_page) {
             <form>
                 <label for="per_page_picker">Per Page</label>
                 <select id="per_page_picker" name="per_page_picker" onchange="window.location.href = document.getElementById('per_page_picker').value;">
-                    <? foreach ($per_page_options as $option) { ?>
+                    <?php foreach ($per_page_options as $option) { ?>
                         <option value="<?php echo get_redirect(new_params: ["per_page" => $option, "paged" => 0]); ?>" <?php echo $option == $per_page ? "selected" : ""; ?>><?php echo $option; ?></option>
                     <?php } ?>
                 </select>
@@ -76,17 +76,17 @@ if (count($tags) > $per_page) {
         </div>
         <div class="tablenav-pages" style="float: right;"><span class="displaying-num"><?php echo $count; ?> <?php echo ($count) ? "items" : "item"; ?></span>
             <span class="pagination-links">
-                <a class="first-page button" href="<? echo get_redirect(new_params: ['paged' => 0]); ?>" <? if ($paged == 0) echo "style='display: none;'" ?>>
+                <a class="first-page button" href="<?php echo get_redirect(new_params: ['paged' => 0]); ?>" <?php if ($paged == 0) echo "style='display: none;'" ?>>
                     <span class="screen-reader-text">First page</span>
                     <span aria-hidden="true">«</span>
                 </a>
-                <a class="prev-page button" href="<? echo get_redirect(new_params: ["paged" => $paged - 1]) ?>" <? if ($paged == 0) echo "style='display: none;'" ?>>
+                <a class="prev-page button" href="<?php echo get_redirect(new_params: ["paged" => $paged - 1]) ?>" <?php if ($paged == 0) echo "style='display: none;'" ?>>
                     <span class="screen-reader-text">Previous page</span>
                     <span aria-hidden="true">‹</span>
                 </a>
                 <span class="paging-input">
                     <label for="current-page-selector" class="screen-reader-text">Current Page</label>
-                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="<? echo $paged + 1 ?>" size="1" aria-describedby="table-paging" data-url="<? echo get_redirect(new_params: ["paged" => "NEWPAGE"]) ?>" onchange="
+                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="<?php echo $paged + 1 ?>" size="1" aria-describedby="table-paging" data-url="<?php echo get_redirect(new_params: ["paged" => "NEWPAGE"]) ?>" onchange="
                     ( function() {
                         $input = document.getElementById('current-page-selector');
                         $url = $input.dataset.url;
@@ -94,14 +94,14 @@ if (count($tags) > $per_page) {
                         window.location.href = $url;
                     })();
                     ">
-                    <span class="tablenav-paging-text"> of <span class="total-pages"><? echo $pages ?></span>
+                    <span class="tablenav-paging-text"> of <span class="total-pages"><?php echo $pages ?></span>
                     </span>
                 </span>
-                <a class="next-page button" href="<? echo get_redirect(new_params: ["paged" => $paged + 1]) ?>" <? if ($paged + 1 >= $pages) echo "style='display: none;'" ?>>
+                <a class="next-page button" href="<?php echo get_redirect(new_params: ["paged" => $paged + 1]) ?>" <?php if ($paged + 1 >= $pages) echo "style='display: none;'" ?>>
                     <span class="screen-reader-text">Next page</span>
                     <span aria-hidden="true">›</span>
                 </a>
-                <a class="last-page button" href="<? echo get_redirect(new_params: ["paged" => $pages - 1]) ?>" <? if ($paged + 1 >= $pages) echo "style='display: none;'" ?>>
+                <a class="last-page button" href="<?php echo get_redirect(new_params: ["paged" => $pages - 1]) ?>" <?php if ($paged + 1 >= $pages) echo "style='display: none;'" ?>>
                     <span class="screen-reader-text">Last page</span>
                     <span aria-hidden="true">»</span>
                 </a>
@@ -114,16 +114,16 @@ if (count($tags) > $per_page) {
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th class="row-title <? echo ($sort_by == "name") ? "sorted $sort_order" : ""; ?>">
-                    <a style="display: flex;" href="<? echo get_redirect(new_params: ["orderby" => "name", "order" => ($sort_by != "name") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Name', 'WpAdminStyle'); ?>
+                <th class="row-title <?php echo ($sort_by == "name") ? "sorted $sort_order" : ""; ?>">
+                    <a style="display: flex;" href="<?php echo get_redirect(new_params: ["orderby" => "name", "order" => ($sort_by != "name") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Name', 'WpAdminStyle'); ?>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true" ?></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
                         </span>
                     </a>
                 </th>
-                <th class="row-title <? echo ($sort_by == "slug") ? "sorted $sort_order" : ""; ?>">
-                    <a style="display: flex;" href="<? echo get_redirect(new_params: ["orderby" => "slug", "order" => ($sort_by != "slug") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Slug', 'WpAdminStyle'); ?>
+                <th class="row-title <?php echo ($sort_by == "slug") ? "sorted $sort_order" : ""; ?>">
+                    <a style="display: flex;" href="<?php echo get_redirect(new_params: ["orderby" => "slug", "order" => ($sort_by != "slug") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Slug', 'WpAdminStyle'); ?>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true" ?></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
@@ -135,7 +135,7 @@ if (count($tags) > $per_page) {
             </tr>
         </thead>
         <tbody>
-            <? foreach ($tags as $tag) { ?>
+            <?php foreach ($tags as $tag) { ?>
                 <tr>
                     <td class="row-title"><?php echo $tag->name; ?></td>
                     <td class="row-title"><?php echo $tag->slug; ?></td>
@@ -153,16 +153,16 @@ if (count($tags) > $per_page) {
         </tbody>
         <tfoot>
             <tr>
-                <th class="row-title <? echo ($sort_by == "name") ? "sorted $sort_order" : ""; ?>">
-                    <a style="display: flex;" href="<? echo get_redirect(new_params: ["orderby" => "name", "order" => ($sort_by != "name") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Name', 'WpAdminStyle'); ?>
+                <th class="row-title <?php echo ($sort_by == "name") ? "sorted $sort_order" : ""; ?>">
+                    <a style="display: flex;" href="<?php echo get_redirect(new_params: ["orderby" => "name", "order" => ($sort_by != "name") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Name', 'WpAdminStyle'); ?>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true" ?></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
                         </span>
                     </a>
                 </th>
-                <th class="row-title <? echo ($sort_by == "slug") ? "sorted $sort_order" : ""; ?>">
-                    <a style="display: flex;" href="<? echo get_redirect(new_params: ["orderby" => "slug", "order" => ($sort_by != "slug") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Slug', 'WpAdminStyle'); ?>
+                <th class="row-title <?php echo ($sort_by == "slug") ? "sorted $sort_order" : ""; ?>">
+                    <a style="display: flex;" href="<?php echo get_redirect(new_params: ["orderby" => "slug", "order" => ($sort_by != "slug") ? "asc" : (($sort_order == "asc") ? "desc" : "asc")]) ?>"><?php esc_attr_e('Slug', 'WpAdminStyle'); ?>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true" ?></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
